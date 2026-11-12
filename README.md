@@ -32,7 +32,7 @@ Restart Pi after changing these variables. To remove: `pi remove git:github.com/
 
 With memory enabled, the extension warms a 3,000-token `context-pack` in the background. Each new memory snapshot is appended as a persistent custom message, hidden from the chat UI but stored in the session and sent to the model. Unchanged snapshots are not repeated. **The system prompt and previous messages are never rewritten**, preserving Pi's append-only context strategy and leaving existing request prefixes intact. Actual provider cache hits still depend on the provider, retention, and other extensions.
 
-The local retrieval cache lasts ten minutes, per extension instance; it is separate from the provider's prompt cache. Session changes and compaction reset the cache and deduplication, so memory can be reintroduced afterward. Branch navigation also resets deduplication for the destination branch. Earlier memory messages remain in conversation history until normal compaction; a newer snapshot supersedes older memory snapshots. The first turn may have no recalled memory while the background request completes; only an explicitly configured fallback is used then.
+The local retrieval cache lasts ten minutes, per extension instance; it is separate from the provider's prompt cache. Session changes and compaction reset the cache and deduplication, so memory can be reintroduced afterward. Branch navigation also resets deduplication for the destination branch. Compaction may summarize or remove earlier memory snapshots from the model's active context, but does not delete them from the saved session log. New snapshots are labelled as superseding older memory snapshots; previous messages are not edited or deleted. The first turn may have no recalled memory while the background request completes; only an explicitly configured fallback is used then.
 
 With hooks enabled, Pi events call `gbrain hook session-start`, `stop`, `compact`, and `session-end`. Calls send only the session ID and working directory, not conversation messages. **GBrain's hooks can persist data or run other side effects according to your GBrain configuration.** Enable them only if that is intended.
 
@@ -42,9 +42,9 @@ Commands use no shell, have a seven-second timeout and 128 KiB output limit, and
 
 Enabling memory sends retrieved context (or the entire configured fallback file) to the model serving the Pi session. Model/provider logs and session storage may retain it. Only enable it in sessions authorized to access that memory; opt-in is not a multi-user access-control boundary. GBrain chooses readable sources and visibility using its own configuration; this extension does not request private widening.
 
-No credentials, personal memory, local-machine paths, transcripts, or inherited installation history are included. Existing Pi/GBrain installations are not changed by this repository.
+No credentials, personal memory, local-machine paths, transcripts, or inherited installation history are included. The package does not migrate or modify another extension, or automatically reconfigure GBrain/MCP. The standard `pi install` command installs the package and registers it in Pi's settings.
 
-The extension does not register MCP tools. Configure GBrain MCP separately if you want the agent to search or save memory. Its storage guidance is advisory: **this is not a filesystem security sandbox** and it does not intercept write/edit/bash tools.
+The extension does not register MCP tools. For searching or saving memory, use separately configured GBrain MCP tools or the GBrain CLI; MCP is optional. Its storage guidance is advisory: **this is not a filesystem security sandbox** and it does not intercept write/edit/bash tools.
 
 ## License
 

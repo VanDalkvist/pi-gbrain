@@ -1,0 +1,33 @@
+{
+  "name": "pi-gbrain",
+  "version": "0.1.0",
+  "description": "GBrain lifecycle hooks and opt-in ambient recall for Pi",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VanDalkvist/pi-gbrain.git"
+  },
+  "keywords": [
+    "pi-package",
+    "pi",
+    "gbrain",
+    "memory"
+  ],
+  "files": [
+    "extensions/",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/gbrain.ts"
+    ]
+  }
+}

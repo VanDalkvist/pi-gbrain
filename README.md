@@ -30,7 +30,9 @@ Restart Pi after changing these variables. To remove: `pi remove git:github.com/
 
 ## Behavior
 
-With memory enabled, the extension warms a 3,000-token `context-pack` in the background and adds its `text` to subsequent agent prompts. Cache lifetime is ten minutes, per extension instance; session changes and compaction reset it. The first turn may have no recalled memory while the background request completes; only an explicitly configured fallback is used then.
+With memory enabled, the extension warms a 3,000-token `context-pack` in the background. Each new memory snapshot is appended as a persistent custom message, hidden from the chat UI but stored in the session and sent to the model. Unchanged snapshots are not repeated. **The system prompt and previous messages are never rewritten**, preserving Pi's append-only context strategy and leaving existing request prefixes intact. Actual provider cache hits still depend on the provider, retention, and other extensions.
+
+The local retrieval cache lasts ten minutes, per extension instance; it is separate from the provider's prompt cache. Session changes and compaction reset the cache and deduplication, so memory can be reintroduced afterward. Branch navigation also resets deduplication for the destination branch. Earlier memory messages remain in conversation history until normal compaction; a newer snapshot supersedes older memory snapshots. The first turn may have no recalled memory while the background request completes; only an explicitly configured fallback is used then.
 
 With hooks enabled, Pi events call `gbrain hook session-start`, `stop`, `compact`, and `session-end`. Calls send only the session ID and working directory, not conversation messages. **GBrain's hooks can persist data or run other side effects according to your GBrain configuration.** Enable them only if that is intended.
 
